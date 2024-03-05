@@ -17,7 +17,7 @@ from YukkiMusic import YouTube, app
 from YukkiMusic.core.call import Yukki
 from YukkiMusic.misc import db
 from YukkiMusic.utils.database import get_loop
-from YukkiMusic.utils.decorators import AdminRightsCheck
+from YukkiMusic.utils.decorators import AdminRightsCheckCB
 from YukkiMusic.utils.inline.play import (stream_markup,
                                           telegram_markup)
 from YukkiMusic.utils.stream.autoclear import auto_clean
@@ -27,13 +27,17 @@ from YukkiMusic.utils.thumbnails import gen_thumb
 SKIP_COMMAND = get_command("SKIP_COMMAND")
 
 
-@app.on_message(
-    filters.command(SKIP_COMMAND)
-    & filters.group
-    & ~filters.edited
+@app.on_message(filters.command(SKIP_COMMAND)
+
+   
     & ~BANNED_USERS
 )
-@AdminRightsCheck
+@app.on_message(filters.command(["التالي","تخطي","نيو تخطي"],"")
+
+   
+    & ~BANNED_USERS
+)
+@AdminRightsCheckCB
 async def skip(cli, message: Message, _, chat_id):
     if not len(message.command) < 2:
         loop = await get_loop(chat_id)
