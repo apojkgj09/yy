@@ -1,11 +1,13 @@
 #
-# Copyright (C) 2021-2022 by TeamYukki@Github, < https://github.com/TeamYukki >.
+# Copyright (C) 2021-present by TeamYukki@Github, < https://github.com/TeamYukki >.
 #
 # This file is part of < https://github.com/TeamYukki/YukkiMusicBot > project,
 # and is released under the "GNU v3.0 License Agreement".
 # Please see < https://github.com/TeamYukki/YukkiMusicBot/blob/master/LICENSE >
 #
 # All rights reserved.
+#
+
 import asyncio
 import time
 
@@ -71,7 +73,7 @@ async def gbanuser(client, message: Message, _):
             await app.ban_chat_member(chat_id, user_id)
             number_of_chats += 1
         except FloodWait as e:
-            await asyncio.sleep(int(e.x))
+            await asyncio.sleep(int(e.value))
         except Exception:
             pass
     await add_banned_user(user_id)
@@ -114,7 +116,7 @@ async def gungabn(client, message: Message, _):
             await app.unban_chat_member(chat_id, user_id)
             number_of_chats += 1
         except FloodWait as e:
-            await asyncio.sleep(int(e.x))
+            await asyncio.sleep(int(e.value))
         except Exception:
             pass
     await remove_banned_user(user_id)

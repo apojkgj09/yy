@@ -1,11 +1,12 @@
 #
-# Copyright (C) 2021-2022 by TeamYukki@Github, < https://github.com/TeamYukki >.
+# Copyright (C) 2021-present by TeamYukki@Github, < https://github.com/TeamYukki >.
 #
 # This file is part of < https://github.com/TeamYukki/YukkiMusicBot > project,
 # and is released under the "GNU v3.0 License Agreement".
 # Please see < https://github.com/TeamYukki/YukkiMusicBot/blob/master/LICENSE >
 #
 # All rights reserved.
+#
 
 from pyrogram import filters
 from pyrogram.types import Message
@@ -68,7 +69,9 @@ async def all_chats(client, message: Message, _):
     j = 0
     for count, chat_id in enumerate(await blacklisted_chats(), 1):
         try:
-            title = (await app.get_chat(chat_id)).title
+            title = (
+                await app.get_chat(chat_id)
+            ).title
         except Exception:
             title = "Private"
         j = 1
