@@ -51,7 +51,6 @@ def git():
     else:
         UPSTREAM_REPO = config.UPSTREAM_REPO
     try:
-        repo = Repo()
         LOGGER(__name__).info(f"Git Client Found [VPS DEPLOYER]")
     except GitCommandError:
         LOGGER(__name__).info(f"Invalid Git Command")
@@ -64,7 +63,6 @@ def git():
         origin.fetch()
         repo.create_head(
             config.UPSTREAM_BRANCH,
-            origin.refs[config.UPSTREAM_BRANCH],
         )
         repo.heads[config.UPSTREAM_BRANCH].set_tracking_branch(
             origin.refs[config.UPSTREAM_BRANCH]
