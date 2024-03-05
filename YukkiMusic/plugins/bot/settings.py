@@ -1,30 +1,32 @@
 #
-# Copyright (C) 2021-2022 by TeamYukki@Github, < https://github.com/TeamYukki >.
+# Copyright (C) 2021-present by TeamYukki@Github, < https://github.com/TeamYukki >.
 #
 # This file is part of < https://github.com/TeamYukki/YukkiMusicBot > project,
 # and is released under the "GNU v3.0 License Agreement".
 # Please see < https://github.com/TeamYukki/YukkiMusicBot/blob/master/LICENSE >
 #
 # All rights reserved.
+#
 
 from pyrogram import filters
+from pyrogram.enums import ChatType
 from pyrogram.errors import MessageNotModified
 from pyrogram.types import (CallbackQuery, InlineKeyboardButton,
-                            InlineKeyboardMarkup, Message)
+                            InlineKeyboardMarkup, InputMediaPhoto, InputMediaVideo, Message)
 
 from config import (BANNED_USERS, CLEANMODE_DELETE_MINS,
                     MUSIC_BOT_NAME, OWNER_ID)
 from strings import get_command
 from YukkiMusic import app
 from YukkiMusic.utils.database import (add_nonadmin_chat,
-                                       cleanmode_off, cleanmode_on,
+                                       
                                        commanddelete_off,
                                        commanddelete_on,
                                        get_aud_bit_name, get_authuser,
                                        get_authuser_names,
                                        get_playmode, get_playtype,
                                        get_vid_bit_name,
-                                       is_cleanmode_on,
+                                  
                                        is_commanddelete_on,
                                        is_nonadmin_chat,
                                        is_suggestion,
@@ -48,7 +50,6 @@ SETTINGS_COMMAND = get_command("SETTINGS_COMMAND")
 @app.on_message(
     filters.command(SETTINGS_COMMAND)
     & filters.group
-    & ~filters.edited
     & ~BANNED_USERS
 )
 @language
@@ -58,7 +59,6 @@ async def settings_mar(client, message: Message, _):
         _["setting_1"].format(message.chat.title, message.chat.id),
         reply_markup=InlineKeyboardMarkup(buttons),
     )
-
 
 @app.on_callback_query(
     filters.regex("settings_helper") & ~BANNED_USERS
@@ -90,7 +90,7 @@ async def settings_back_markup(
         await CallbackQuery.answer()
     except:
         pass
-    if CallbackQuery.message.chat.type == "private":
+    if CallbackQuery.message.chat.type == ChatType.PRIVATE:
         try:
             await app.resolve_peer(OWNER_ID[0])
             OWNER = OWNER_ID[0]
@@ -486,81 +486,6 @@ async def authusers_mar(client, CallbackQuery, _):
         else:
             await remove_nonadmin_chat(CallbackQuery.message.chat.id)
             buttons = auth_users_markup(_, True)
-    try:
-        return await CallbackQuery.edit_message_reply_markup(
-            reply_markup=InlineKeyboardMarkup(buttons)
-        )
-    except MessageNotModified:
-        return
-
-
-## Clean Mode
-
-
-@app.on_callback_query(
-    filters.regex(
-        pattern=r"^(CLEANMODE|COMMANDELMODE|SUGGESTIONCHANGE)$"
-    )
-    & ~BANNED_USERS
-)
-@ActualAdminCB
-async def cleanmode_mark(client, CallbackQuery, _):
-    command = CallbackQuery.matches[0].group(1)
-    try:
-        await CallbackQuery.answer(_["set_cb_6"], show_alert=True)
-    except:
-        pass
-    if command == "CLEANMODE":
-        sta = None
-        if await is_commanddelete_on(CallbackQuery.message.chat.id):
-            sta = True
-        sug = None
-        if await is_suggestion(CallbackQuery.message.chat.id):
-            sug = True
-        cle = None
-        if await is_cleanmode_on(CallbackQuery.message.chat.id):
-            await cleanmode_off(CallbackQuery.message.chat.id)
-        else:
-            await cleanmode_on(CallbackQuery.message.chat.id)
-            cle = True
-        buttons = cleanmode_settings_markup(
-            _, status=cle, dels=sta, sug=sug
-        )
-        return await CallbackQuery.edit_message_reply_markup(
-            reply_markup=InlineKeyboardMarkup(buttons)
-        )
-    if command == "COMMANDELMODE":
-        cle = None
-        sta = None
-        if await is_cleanmode_on(CallbackQuery.message.chat.id):
-            cle = True
-        sug = None
-        if await is_suggestion(CallbackQuery.message.chat.id):
-            sug = True
-        if await is_commanddelete_on(CallbackQuery.message.chat.id):
-            await commanddelete_off(CallbackQuery.message.chat.id)
-        else:
-            await commanddelete_on(CallbackQuery.message.chat.id)
-            sta = True
-        buttons = cleanmode_settings_markup(
-            _, status=cle, dels=sta, sug=sug
-        )
-    if command == "SUGGESTIONCHANGE":
-        cle = None
-        sta = None
-        if await is_cleanmode_on(CallbackQuery.message.chat.id):
-            cle = True
-        if await is_commanddelete_on(CallbackQuery.message.chat.id):
-            sta = True
-        if await is_suggestion(CallbackQuery.message.chat.id):
-            await suggestion_off(CallbackQuery.message.chat.id)
-            sug = False
-        else:
-            await suggestion_on(CallbackQuery.message.chat.id)
-            sug = True
-        buttons = cleanmode_settings_markup(
-            _, status=cle, dels=sta, sug=sug
-        )
     try:
         return await CallbackQuery.edit_message_reply_markup(
             reply_markup=InlineKeyboardMarkup(buttons)

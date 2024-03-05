@@ -1,11 +1,12 @@
 #
-# Copyright (C) 2021-2022 by TeamYukki@Github, < https://github.com/TeamYukki >.
+# Copyright (C) 2021-present by TeamYukki@Github, < https://github.com/TeamYukki >.
 #
 # This file is part of < https://github.com/TeamYukki/YukkiMusicBot > project,
 # and is released under the "GNU v3.0 License Agreement".
 # Please see < https://github.com/TeamYukki/YukkiMusicBot/blob/master/LICENSE >
 #
 # All rights reserved.
+#
 
 
 from typing import Union
@@ -31,7 +32,6 @@ HELP_COMMAND = get_command("HELP_COMMAND")
 @app.on_message(
     filters.command(HELP_COMMAND)
     & filters.private
-    & ~filters.edited
     & ~BANNED_USERS
 )
 @app.on_callback_query(
@@ -75,7 +75,6 @@ async def helper_private(
 @app.on_message(
     filters.command(HELP_COMMAND)
     & filters.group
-    & ~filters.edited
     & ~BANNED_USERS
 )
 @LanguageStart
